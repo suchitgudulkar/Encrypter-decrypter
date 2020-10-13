@@ -1,0 +1,59 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Forms {% endblock %} 
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="yoo-height-b30 yoo-height-lg-b30"></div>
+    <div class="container">
+        <div class="yoo-uikits-heading">
+            <h2 class="yoo-uikits-title">Encrypt File</h2>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="yoo-height-b30 yoo-height-lg-b30"></div>
+                <div class="yoo-card yoo-style1">
+                    <div class="yoo-card-heading">
+                        <div class="yoo-card-heading-left">
+                            <h2 class="yoo-card-title">In case of multiple files, Kindly upload compressed folder.(zip/tar)</h2>
+                        </div>
+                    </div>
+                    <div class="yoo-card-body">
+                        <div class="yoo-padd-lr-20">
+                            <div class="yoo-height-b20 yoo-height-lg-b20"></div>
+                            <form method="post" action="encrypt_file" enctype="multipart/form-data">
+                            {% csrf_token %}
+                                <div class="form-group form-group-file">
+                                    <label for="exampleFormControlFile1">Choose File</label>
+                                    <input type="file" class="form-control-file" id="exampleFormControlFile1" name="file" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary" value="Upload">Encrypt <ion-icon name="keypad-outline"></ion-icon></button> Already have encrypted file? 
+                                <a href="/decrypt_file"> <strong> Decrypt Here</strong> </a>
+
+                            </form>
+                            <div class="yoo-height-b5 yoo-height-lg-b5"></div>
+                        </div>
+                    </div>
+                </div><!-- .yoo-card -->
+
+                    <div class="yoo-height-b5 yoo-height-lg-b5"></div>
+                    </div>
+                    </div>
+                </div><!-- .yoo-card -->
+                <div class="yoo-height-b30 yoo-height-lg-b30"></div>
+
+            </div><!-- .col -->
+        </div>
+    </div>
+    <div class="yoo-height-b30 yoo-height-lg-b30"></div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}

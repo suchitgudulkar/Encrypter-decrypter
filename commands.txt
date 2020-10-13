@@ -1,0 +1,3 @@
+openssl req -x509 -nodes -days 100000 -newkey rsa:2048  -keyout privatekey.pem  -out publickey.pem  -subj '/'
+openssl  smime  -encrypt -aes256  -in  category.db  -binary  -outform DEM  -out  LargeFile_encrypted.db  publickey.pem
+openssl  smime -decrypt  -in  LargeFile_encrypted.db  -binary -inform DEM -inkey privatekey.pem  -out  LargeFile.db

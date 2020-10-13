@@ -1,0 +1,52 @@
+{% extends "layouts/base.html" %}
+{% block title %} Documentation {% endblock %}
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+{% block content %}
+<style>
+img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+<div class="yoo-height-b30 yoo-height-lg-b30"></div>
+<div class="container">
+  <div class="yoo-uikits-heading">
+    <h2 class="yoo-uikits-title">We Use: Asymmetric Encryption</h2>
+  </div>
+</div>
+<div class="yoo-height-b30 yoo-height-lg-b30"></div>
+<div class="container">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="yoo-documentation-body">
+        <div class="yoo-height-b5 yoo-height-lg-b5"></div>
+        <!-- <h4>We Use: Asymmetric Encryption</h4> -->
+        <p style="text-align: justify;">Unlike symmetric encryption, here we use different keys for encryption and decryption. <strong>Asymmetrical encryption</strong> is also known as <strong>public key cryptography</strong>. <br></p>
+        <p>Secret keys are exchanged over the Internet or a large network. So in Symmetric encryption, if someone gets the secret key, he can decrypt the message. But asymmetric encryption ensures that malicious person do not misuse the key.</p>
+        <p>In asymmetric encryption, there are two key pairs..</p>
+        
+        <p><li>Public key</li>
+        <li>Private key</li></p>
+
+        <p><strong>A file that is encrypted using a public key can only be decrypted using it's private key.</strong> </p>
+        <p style="text-align: justify;">
+         The  primary  advantage  of  public-key  cryptography  is  increased  security:  the private keys do not ever need to be transmitted or revealed to anyone.</p><br>
+      <img style="width:700px; height: auto; align-items: center;" src="https://miro.medium.com/max/1440/0*s9ke2phuU_qzK5-0.png">
+
+
+    </div><br>
+
+    
+
+       </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+{% endblock content %}
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}

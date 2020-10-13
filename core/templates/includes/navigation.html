@@ -1,0 +1,69 @@
+
+  <div class="yoo-height-b60 yoo-height-lg-b60"></div>
+  <header class="yoo-header yoo-style1 yoo-sticky-menu">
+    <div class="yoo-main-header">
+      <div class="yoo-main-header-in">
+        <div class="yoo-main-header-left">
+          <a href="/"
+             
+             class="yoo-logo-link yoo-light-logo">
+            <img style="width:135px; height:auto;" src="/static/assets/img/logo.png" alt="logo-light" /></a>
+          <!-- For Site Title -->
+          <!-- <span class="yoo-site-title">
+            <a href="index.html">Logo</a>
+          </span> -->
+        </div>
+        <div class="yoo-main-header-right">
+          <div class="yoo-nav-wrap yoo-fade-up">
+            <div class="yoo-nav-toggle">
+              <ion-icon name="ellipsis-vertical"></ion-icon>
+            </div>
+            <nav class="yoo-nav yoo-desktop-nav">
+              <ul class="yoo-nav-list">
+                <li><a href="/"><ion-icon name="help-circle-outline"></ion-icon> How it works?</a></li>
+                <!-- <li><a href="/documentation.html"><ion-icon name="document-text-outline"></ion-icon> Documents</a></li> -->
+                <li><a href="/encrypt_file"><ion-icon name="lock-closed-outline"></ion-icon> Encrypter</a></li>
+                <li><a href="/decrypt_file"><ion-icon name="lock-open-outline"></ion-icon> Decrypter</a></li>
+              </ul>
+            </nav>
+            <!-- .yoo-nav -->
+          </div>
+          <!-- .yoo-nav-wrap -->
+          <ul class="yoo-ex-nav yoo-style1 yoo-flex yoo-mp0">
+            <li>
+              <div class="yoo-toggle-body yoo-profile-nav yoo-style1">
+                <div class="yoo-toggle-btn yoo-profile-nav-btn">
+                  <div class="yoo-profile-nav-text">
+                    <span>Welcome,</span>
+                    <h4>
+                        {{ request.user.username }}
+                    </h4>
+                  </div>
+                  <div class="yoo-profile-nav-img">
+                    <img src="/static/assets/img/profile-pic.png" alt="profile">
+                  </div>
+                </div>
+                <ul class="yoo-dropdown yoo-style1">
+                  <!-- <li>
+                    <a href="/settings.html"><ion-icon name="person-circle"></ion-icon>My Profile</a>
+                  </li>
+                  <li>
+                    <a href="#"><ion-icon name="settings"></ion-icon>Settings</a>
+                  </li>
+                  <li>
+                    <a href="#"><ion-icon name="videocam"></ion-icon>Upload</a>
+                  </li> -->
+                  <li>
+                    <a href="https://contact.dimabusiness.com"><ion-icon name="help-buoy-outline"></ion-icon>Support</a>
+                  </li>
+                  <li class="yoo-dropdown-cta">
+                      <a href={% url 'logout' %} >Sign Out</a>
+                  </li>
+                </ul>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </header><!-- .yoo-header -->
