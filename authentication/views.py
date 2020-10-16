@@ -15,6 +15,8 @@ from django.http import HttpResponse
 from .forms import LoginForm, SignUpForm
 from django.conf import settings
 
+from app.models import *
+
 def login_view(request):
     form = LoginForm(request.POST or None)
 
@@ -26,6 +28,9 @@ def login_view(request):
             username = form.cleaned_data.get("username")
             password = form.cleaned_data.get("password")
             user = authenticate(username=username, password=password)
+            base_path = settings.BASE_DIR+"/usersdata/folder_"+username
+            os.system("rm "+base_path+"/downloads/*")
+
             if user is not None:
                 login(request, user)
                 return redirect("/")
@@ -46,6 +51,7 @@ def register_user(request):
         if form.is_valid():
             form.save()
             username = form.cleaned_data.get("username")
+            email = form.cleaned_data.get("email")
             raw_password = form.cleaned_data.get("password1")
             user = authenticate(username=username, password=raw_password)
             base_path = settings.BASE_DIR+"/usersdata/folder_"+username
@@ -59,6 +65,19 @@ def register_user(request):
             success = True
             
             #return redirect("/login/")
+            username1 = User.objects.get(username=username)
+            full_name = request.POST["full_name"]
+            contact = request.POST["contact"]
+            address = request.POST["address"]
+            city = request.POST["city"]
+            state = request.POST["state"]
+            country = request.POST["country"]
+            pincode = request.POST["pincode"]
+            source_of_known = request.POST["source_of_known"]
+
+            user_profile_info = User_Profile(username=username1, full_name=full_name, contact=contact, email=email, address=address, city=city, state=state, country=country, pincode=pincode, source_of_known=source_of_known)
+
+            user_profile_info.save()
 
         else:
             msg = 'Form is not valid'    

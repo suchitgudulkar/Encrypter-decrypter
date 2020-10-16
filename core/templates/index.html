@@ -30,10 +30,10 @@
                             <form method="post" action="decrypt_file" enctype="multipart/form-data">
                             {% csrf_token %}
                                 <div class="form-group form-group-file">
-                                    <label for="exampleFormControlFile1">Choose File</label>
+                                    <!-- <label for="exampleFormControlFile1">Choose File</label> -->
                                     <input type="file" class="form-control-file" id="exampleFormControlFile1" name="file" required>
                                 </div>
-                                <button type="submit" class="btn btn-primary" value="Upload">Decrypt <ion-icon name="keypad-outline"></ion-icon></button>  Want to Encrypt the file? 
+                                <button type="submit" class="btn btn-success btn-sm" value="Upload">Decrypt </button>  Want to Encrypt the file? 
                                 <a href="/encrypt_file"> <strong> Encrypt Here</strong> </a>
                             </form>
                             <div class="yoo-height-b5 yoo-height-lg-b5"></div>

@@ -26,7 +26,7 @@
               {% csrf_token %}
 
               <h2 class="yoo-form-title">
-                Register Your Organization
+                Register Here
               </h2>
               <div class="yoo-form-subtitle">
                 {% if msg %}
@@ -42,6 +42,80 @@
 
               <div class="row">
                 
+                
+
+                <div class="col-lg-12">
+                  <div class="form-group level-up form-group-md">
+                    <label for="name">Name</label>
+                    <input class="form-control" type="text" name="full_name" required>
+                  </div>
+                  <!-- <span class="text-error">{{ form.username.errors }}</span> -->
+                </div>
+
+                <div class="col-lg-12">
+                  <div class="form-group level-up form-group-md">
+                    <label for="name">Contact</label>
+                    <input class="form-control" type="text" name="contact" required>
+                  </div>
+                  <!-- <span class="text-error">{{ form.username.errors }}</span> -->
+                </div>
+
+                <div class="col-lg-12">
+                  <div class="form-group level-up form-group-md">
+                    <label for="name">Address</label>
+                    <input class="form-control" type="text" name="address" required>
+                  </div>
+                  <!-- <span class="text-error">{{ form.username.errors }}</span> -->
+                </div>
+
+                <div class="col-lg-12">
+                  <div class="form-group level-up form-group-md">
+                    <label for="name">City</label>
+                    <input class="form-control" type="text" name="city" required>
+                  </div>
+                  <!-- <span class="text-error">{{ form.username.errors }}</span> -->
+                </div>
+
+                <div class="col-lg-12">
+                  <div class="form-group level-up form-group-md">
+                    <label for="name">State</label>
+                    <input class="form-control" type="text" name="state" required>
+                  </div>
+                  <!-- <span class="text-error">{{ form.username.errors }}</span> -->
+                </div>
+
+                <div class="col-lg-12">
+                  <div class="form-group level-up form-group-md">
+                    <label for="name">Country</label>
+                    <input class="form-control" type="text" name="country" required>
+                  </div>
+                  <!-- <span class="text-error">{{ form.username.errors }}</span> -->
+                </div>
+
+                <div class="col-lg-12">
+                  <div class="form-group level-up form-group-md">
+                    <label for="name">Pincode</label>
+                    <input class="form-control" type="text" name="pincode" required>
+                  </div>
+                  <!-- <span class="text-error">{{ form.username.errors }}</span> -->
+                </div>
+
+                <div class="col-lg-12">
+                  <div class="form-group level-up form-group-md">
+                    <label for="name">Source Of Known</label>
+                    <select class="form-control" type="text" name="source_of_known" required>
+                      <option value="none" selected disabled hidden> </option> 
+                      <option>DIMA Employee</option>
+                      <option>Github</option>
+                      <option>DIMA Partner</option>
+                      <option>News Paper Ad</option>
+                      <option>Social Media</option>
+                      <option>Others</option>
+                      </select> 
+                  </div>
+                  <!-- <span class="text-error">{{ form.username.errors }}</span> -->
+                </div>
+
                 <div class="col-lg-12">
                   <div class="form-group level-up form-group-md">
                     <label for="email">Username</label>
