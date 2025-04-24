@@ -3,7 +3,9 @@ import argparse
 import IndicatorTypes
 import hashlib
 
-API_KEY = 'b8604201fee2be44a75e20fc88ba089c1d4bd231c3f473a36f8fa0334b1edc56'
+# API_KEY = 'b8604201fee2be44a75e20fc88ba089c1d4bd231c3f473a36f8fa0334b1edc56'
+API_KEY = '364a0c9c4ccffaf4de039a3bfa44b6e8f2c0c294375b2e5efccd10b7dd213f6a'
+
 OTX_SERVER = 'https://otx.alienvault.com/'
 otx = OTXv2(API_KEY, server=OTX_SERVER)
 
@@ -67,7 +69,7 @@ def file_(otx, hash):
 def isMalicious_file(file1):
     try:
         otxRes = file_(otx, file1)
-        # print(otxRes)
+        print(otxRes)
         if len(otxRes) > 0:
             return True
         else:

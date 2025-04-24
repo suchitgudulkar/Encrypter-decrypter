@@ -82,7 +82,7 @@ def decrypt_file(request):
         return HttpResponse(html_template.render(context, request))
 
     except:
-    
+
         html_template = loader.get_template( 'error-500.html' )
         return HttpResponse(html_template.render(context, request))    
         
@@ -91,43 +91,72 @@ def encrypt_file(request):
     context = {}
     try:
         if request.method == 'POST':
-            handle_uploaded_file(request,request.FILES['file'], str(request.FILES['file']))
             username = request.user.username
             filename = str(request.FILES['file'])
             filename = filename.replace(" ", "_")
-
-
             base_path = settings.BASE_DIR+"/usersdata/folder_"+username
-            os.system("rm "+base_path+"/downloads/*")
-
+            
+            # Debug print statements
+            print(f"Processing file: {filename}")
+            print(f"Base path: {base_path}")
+            
+            # Ensure directories exist
+            if not os.path.exists(base_path+"/uploads/"):
+                os.makedirs(base_path+"/uploads/", exist_ok=True)
+            if not os.path.exists(base_path+"/downloads/"):
+                os.makedirs(base_path+"/downloads/", exist_ok=True)
+                
+            # Clear downloads
+            os.system(f"rm -f {base_path}/downloads/*")
+            
+            # Handle file upload
+            handle_uploaded_file(request, request.FILES['file'], filename)
+            
+            # Check if the file was uploaded successfully
+            if not os.path.exists(f"{base_path}/uploads/{filename}"):
+                raise Exception(f"File was not uploaded successfully to {base_path}/uploads/{filename}")
+                
+            # Check for malicious content
             hash = hashlib.md5(open(base_path+"/uploads/" + filename, 'rb').read()).hexdigest()
             res = isMalicious_file(hash)
-            print(res)
+            print(f"Malicious file check result: {res}")
 
             if res == False:
-                os.system("openssl  smime  -encrypt -aes256  -in "+base_path+"/uploads/"+filename+ " -binary -outform DEM -out "+base_path+ "/downloads/enc_"+filename+" "+base_path+"/enc_key/"+username+"publickey.pem")
+                # Check if public key exists
+                pub_key_path = f"{base_path}/enc_key/{username}publickey.pem"
+                if not os.path.exists(pub_key_path):
+                    raise Exception(f"Public key not found at {pub_key_path}")
+                
+                # Use subprocess to get error output
+                cmd = f"openssl smime -encrypt -aes256 -in {base_path}/uploads/{filename} -binary -outform DEM -out {base_path}/downloads/enc_{filename} {pub_key_path}"
+                print(f"Running command: {cmd}")
+                process = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+                
+                if process.returncode != 0:
+                    raise Exception(f"OpenSSL encryption failed: {process.stderr}")
 
-                os.remove(base_path+"/uploads/"+filename)
-                # filepath = os.path.join(settings.BASE_DIR, "dec_keys/dec_"+filename)
-                filepath = base_path+"/downloads/enc_"+filename
-
-                return FileResponse(open(filepath, 'rb'), as_attachment=True, filename="enc_"+filename[4:])
+                # Remove uploaded file
+                os.remove(f"{base_path}/uploads/{filename}")
+                
+                # Check if output file exists
+                output_path = f"{base_path}/downloads/enc_{filename}"
+                if not os.path.exists(output_path):
+                    raise Exception(f"Encrypted file was not created at {output_path}")
+                
+                return FileResponse(open(output_path, 'rb'), as_attachment=True, filename=f"enc_{filename}")
             else:
-                html_template = loader.get_template( "access-denied.html" )
+                html_template = loader.get_template("access-denied.html")
                 return HttpResponse(html_template.render(context, request))
 
-        html_template = loader.get_template( "enc.html" )
+        html_template = loader.get_template("enc.html")
         return HttpResponse(html_template.render(context, request))
             
-    except template.TemplateDoesNotExist:
-
-        html_template = loader.get_template( 'error-404.html' )
+    except Exception as e:
+        # Log the specific error
+        print(f"Encryption error: {str(e)}")
+        context['error'] = str(e)
+        html_template = loader.get_template('error-500.html')
         return HttpResponse(html_template.render(context, request))
-
-    except:
-    
-        html_template = loader.get_template( 'error-500.html' )
-        return HttpResponse(html_template.render(context, request)) 
 
 @login_required(login_url="/login/")
 def handle_uploaded_file(request, file, filename):
