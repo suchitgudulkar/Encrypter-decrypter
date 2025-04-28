@@ -13,7 +13,7 @@ import argparse
 import IndicatorTypes
 import hashlib
 
-API_KEY = 'b8604201fee2be44a75e20fc88ba089c1d4bd231c3f473a36f8fa0334b1edc56'
+API_KEY = '364a0c9c4ccffaf4de039a3bfa44b6e8f2c0c294375b2e5efccd10b7dd213f6a'
 OTX_SERVER = 'https://otx.alienvault.com/'
 otx = OTXv2(API_KEY, server=OTX_SERVER)
 from .mal_file import file_, isMalicious_file
@@ -66,7 +66,8 @@ def decrypt_file(request):
                 os.remove(base_path+"/uploads/"+filename)
                 # filepath = os.path.join(settings.BASE_DIR, "dec_keys/dec_"+filename)
                 filepath = base_path+"/downloads/dec_"+filename
-            
+
+                # Downloads encrypted file
                 return FileResponse(open(filepath, 'rb'), as_attachment=True, filename="dec_"+filename[4:])
             else:
                 html_template = loader.get_template( "access-denied.html" )
@@ -143,6 +144,7 @@ def encrypt_file(request):
                 if not os.path.exists(output_path):
                     raise Exception(f"Encrypted file was not created at {output_path}")
                 
+                # Downloads encrypted file
                 return FileResponse(open(output_path, 'rb'), as_attachment=True, filename=f"enc_{filename}")
             else:
                 html_template = loader.get_template("access-denied.html")
