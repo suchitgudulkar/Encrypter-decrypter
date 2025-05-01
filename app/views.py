@@ -1,16 +1,13 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render
 from django.template import loader
 from django.http import HttpResponse, FileResponse
 from django import template
 import os
 from django.conf import settings
-from subprocess import run
-from subprocess import Popen, PIPE
+from subprocess import PIPE
 import subprocess
 from OTXv2 import OTXv2
-import argparse
-import IndicatorTypes
 import hashlib
 
 API_KEY = '364a0c9c4ccffaf4de039a3bfa44b6e8f2c0c294375b2e5efccd10b7dd213f6a'

@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.http import FileResponse, JsonResponse
 from django.conf import settings
@@ -13,6 +14,7 @@ def steganography_info(request):
     """
     return render(request, 'steganography/info.html')
 
+@login_required(login_url="/login/")
 @csrf_exempt
 def encode(request):
     """
@@ -76,6 +78,7 @@ def encode(request):
     
     return render(request, 'steganography/encode.html')
 
+@login_required(login_url="/login/")
 @csrf_exempt
 def decode(request):
     """
@@ -119,6 +122,7 @@ def decode(request):
     
     return render(request, 'steganography/decode.html')
 
+@login_required(login_url="/login/")
 def download_file(request, filename):
     """
     View for downloading an encoded image
