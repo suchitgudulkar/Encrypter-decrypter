@@ -130,3 +130,6 @@ dmypy.json
 
 # userdata | media files
 usersdata/
+
+# database 
+db.sqlite3
