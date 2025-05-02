@@ -21,9 +21,9 @@
             <nav class="yoo-nav yoo-desktop-nav">
               <ul class="yoo-nav-list">
                 <li><a href=""><ion-icon name="help-circle-outline"></ion-icon> How it works?</a></li>
-                <!-- <li><a href="D:\projects\encrypter-decrypter-django-app\core\templates\includes\sidebar_.html"><ion-icon name="document-text-outline"></ion-icon> Documents</a></li> -->
                 <li><a href="/encrypt_file"><ion-icon name="lock-closed-outline"></ion-icon> Encrypter</a></li>
                 <li><a href="/decrypt_file"><ion-icon name="lock-open-outline"></ion-icon> Decrypter</a></li>
+                <li><a href="{% url "steganography:info" %}"><ion-icon name="lock-open-outline"></ion-icon> Steganography</a></li>
               </ul>
             </nav>
             <!-- .yoo-nav -->
