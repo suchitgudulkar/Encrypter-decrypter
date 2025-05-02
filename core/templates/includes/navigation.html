@@ -57,8 +57,13 @@
                     <a href="https://contact.dimabusiness.com"><ion-icon name="help-buoy-outline"></ion-icon>Support</a>
                   </li>-->
                   <li class="yoo-dropdown-cta">
-                      <a href={% url 'logout' %} >Sign Out</a>
-                  </li>
+                    <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                      {% csrf_token %}
+                      <button type="submit" style="background:none; border:none; padding:0; margin:0; color:inherit; cursor:pointer;">
+                        Sign Out
+                      </button>
+                    </form>
+                  </li>                  
                 </ul>
               </div>
             </li>

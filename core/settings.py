@@ -129,5 +129,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'usersdata/')
 
 MEDIA_URL = '/usersdata/'
 
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 #############################################################
 #############################################################
