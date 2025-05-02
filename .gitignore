@@ -132,9 +132,6 @@ dmypy.json
 # Ignore everything in usersdata/
 usersdata/*
 
-# But do not ignore any folder (this is needed so .gitkeep files can be tracked)
-# !usersdata/**/
-
 # Do not ignore .gitkeep files inside those folders
 !usersdata/**/.gitkeep
 
