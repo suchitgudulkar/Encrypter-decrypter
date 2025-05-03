@@ -1,14 +1,5 @@
-# -*- encoding: utf-8 -*-
-"""
-License: MIT
-Copyright (c) 2019 - present AppSeed.us
-"""
-
 from django.db import models
 from django.contrib.auth.models import User
-
-# Create your models here.
-
 
 SOURCE_CHOICES = (
     ('DIMA Employee', 'DIMA Employee'),
@@ -18,7 +9,6 @@ SOURCE_CHOICES = (
     ('Social Media', 'Social Media'),
     ('Others', 'Others'),
 )
-
 
 class User_Profile(models.Model):
     username = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)

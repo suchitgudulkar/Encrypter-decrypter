@@ -1,0 +1,146 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %}Steganography Information{% endblock %}
+
+{% block stylesheets %}
+<style>
+  .feature-box {
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+  }
+  .feature-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  }
+  .btn-action {
+    transition: all 0.3s ease;
+    font-weight: 500;
+  }
+  .btn-action:hover {
+    transform: translateY(-3px);
+  }
+  .icon-box {
+    font-size: 48px;
+    margin-bottom: 15px;
+  }
+  .card {
+    border: none;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+  }
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+  }
+</style>
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-12">
+      <div class="yoo-card yoo-card-1">
+        <div class="yoo-card-heading">
+          <div class="yoo-card-heading-left">
+            <h2 class="yoo-card-title"><span class="yoo-card-title-icon"><ion-icon name="lock-closed-outline"></ion-icon></span>LSB Steganography</h2>
+          </div>
+        </div>
+        <div class="yoo-card-body">
+          <div class="row mt-3">
+            <div class="col-12">
+              <div class="card mb-4">
+                <div class="card-body">
+                  <h3 class="mb-3">What is Steganography?</h3>
+                  <p class="lead">Steganography is the practice of concealing a message within another file or message to avoid detection. Unlike cryptography, which aims to make a message unreadable, steganography aims to hide the existence of the message itself.</p>
+                  
+                  <h4 class="mt-4">How LSB (Least Significant Bit) Steganography Works</h4>
+                  <p>LSB steganography works by replacing the least significant bit of each byte in an image file with bits from the secret message. Since the least significant bit has the smallest impact on the color value, changes are virtually imperceptible to the human eye.</p>
+                  
+                  <div class="row mt-4">
+                    <div class="col-md-6">
+                      <div class="feature-box bg-light">
+                        <div class="icon-box text-primary">
+                          <ion-icon name="analytics-outline"></ion-icon>
+                        </div>
+                        <h5>The Process</h5>
+                        <p>For example, if we have the letter 'A' (ASCII 65, binary 01000001) to hide in an image:</p>
+                        <pre>Original pixel: [00101101, 00011100, 11011100]
+After hiding: [00101100, 00011101, 11011100]</pre>
+                        <p>Only 2 bits needed to change, making the alteration virtually undetectable.</p>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="feature-box bg-light">
+                        <div class="icon-box text-success">
+                          <ion-icon name="checkmark-circle-outline"></ion-icon>
+                        </div>
+                        <h5>Features</h5>
+                        <ul>
+                          <li>Virtually imperceptible changes to the image</li>
+                          <li>Works with any type of message (text, binary data)</li>
+                          <li>No change in file size, avoiding suspicion</li>
+                          <li>Simple yet effective technique</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="row mt-3">
+                    <div class="col-md-6">
+                      <div class="feature-box bg-light">
+                        <div class="icon-box text-warning">
+                          <ion-icon name="alert-circle-outline"></ion-icon>
+                        </div>
+                        <h5>Limitations</h5>
+                        <ul>
+                          <li>Limited capacity (typically 1/8 of the file size)</li>
+                          <li>Not resistant to image manipulation or compression</li>
+                          <li>Works only with lossless formats (PNG, BMP, TIFF)</li>
+                          <li>Vulnerable to statistical analysis</li>
+                        </ul>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="feature-box bg-light">
+                        <div class="icon-box text-danger">
+                          <ion-icon name="information-circle-outline"></ion-icon>
+                        </div>
+                        <h5>Important Notes</h5>
+                        <ul>
+                          <li>Always use lossless image formats (PNG, BMP, TIFF)</li>
+                          <li>JPEG/JPG compression will destroy hidden data</li>
+                          <li>The image must be large enough to hold your message</li>
+                          <li>Keep your encoded images secure</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="text-center mt-5">
+                    <div class="row justify-content-center">
+                      <div class="col-md-5">
+                        <a href="{% url 'steganography:encode' %}" class="btn btn-primary btn-lg btn-block btn-action mb-3">
+                          <ion-icon name="lock-closed-outline" class="mr-2"></ion-icon> Encode Message
+                        </a>
+                      </div>
+                      <div class="col-md-5">
+                        <a href="{% url 'steganography:decode' %}" class="btn btn-success btn-lg btn-block btn-action mb-3">
+                          <ion-icon name="key-outline" class="mr-2"></ion-icon> Decode Message
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

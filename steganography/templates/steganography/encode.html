@@ -1,0 +1,390 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %}Encode Message{% endblock %}
+
+{% block stylesheets %}
+<style>
+  .custom-file-label::after {
+    content: "Browse";
+  }
+  #preview-container {
+    max-width: 100%;
+    height: 300px;
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+  #preview-container.has-image {
+    border: none;
+  }
+  #image-preview {
+    max-width: 100%;
+    max-height: 100%;
+    display: none;
+  }
+  .drop-text {
+    color: #aaa;
+    font-size: 18px;
+    pointer-events: none;
+  }
+  .drag-over {
+    border-color: #007bff !important;
+    background-color: rgba(0, 123, 255, 0.05);
+  }
+  .progress {
+    height: 8px;
+    margin-top: 15px;
+    display: none;
+  }
+  #error-alert, #success-alert {
+    display: none;
+  }
+  #message-counter {
+    font-size: 12px;
+    color: #6c757d;
+  }
+  .file-info {
+    font-size: 14px;
+    margin-top: 5px;
+    color: #666;
+  }
+  .encode-btn {
+    transition: all 0.3s ease;
+  }
+  .encode-btn:hover {
+    transform: translateY(-2px);
+  }
+  .go-back {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: #007bff;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+  .go-back:hover {
+    transform: translateX(-5px);
+    color: #0056b3;
+  }
+  .feature-tip {
+    background-color: #f8f9fa;
+    border-left: 4px solid #007bff;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+  }
+</style>
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-12">
+      <div class="yoo-card yoo-card-1">
+        <div class="yoo-card-heading">
+          <div class="yoo-card-heading-left">
+            <h2 class="yoo-card-title"><span class="yoo-card-title-icon"><ion-icon name="lock-closed-outline"></ion-icon></span>Encode Secret Message</h2>
+          </div>
+        </div>
+        <div class="yoo-card-body">
+          <a href="{% url 'steganography:info' %}" class="go-back">
+            <ion-icon name="arrow-back-outline"></ion-icon> Back to information
+          </a>
+          
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="card mb-4">
+                <div class="card-body">
+                  <h5 class="card-title">Upload Image</h5>
+                  <div class="feature-tip">
+                    <ion-icon name="information-circle-outline"></ion-icon>
+                    <span>Only PNG, BMP and TIFF formats are supported. JPEG/JPG will lose the hidden data due to compression.</span>
+                  </div>
+                  
+                  <div id="preview-container">
+                    <img id="image-preview" src="#" alt="Preview">
+                    <div class="drop-text">Drag & drop image here or click to select</div>
+                  </div>
+                  
+                  <div class="mt-3">
+                    <input type="file" class="form-control-file" id="image-upload" accept=".png,.bmp,.tiff,.tif" style="display: none;">
+                    <button id="browse-btn" class="btn btn-outline-primary btn-sm">
+                      <ion-icon name="image-outline"></ion-icon> Browse Images
+                    </button>
+                    <span class="file-info" id="file-info"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-lg-6">
+              <div class="card mb-4">
+                <div class="card-body">
+                  <h5 class="card-title">Your Secret Message</h5>
+                  <div class="form-group">
+                    <label for="message">Enter the message to hide:</label>
+                    <textarea class="form-control" id="message" rows="6" placeholder="Type your secret message here..."></textarea>
+                    <div id="message-counter" class="mt-1">0 characters</div>
+                  </div>
+                  
+                  <div class="feature-tip">
+                    <ion-icon name="bulb-outline"></ion-icon>
+                    <span>The maximum message length depends on the image size. A typical rule is: maximum message size ≈ (image width × height) ÷ 8 bytes.</span>
+                  </div>
+                  
+                  <div class="text-center mt-4">
+                    <button id="encode-btn" class="btn btn-primary btn-lg encode-btn" disabled>
+                      <ion-icon name="lock-closed-outline"></ion-icon> Encode & Download
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="progress">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
+          </div>
+          
+          <div id="error-alert" class="alert alert-danger mt-3" role="alert">
+            <ion-icon name="alert-circle-outline"></ion-icon>
+            <span id="error-message"></span>
+          </div>
+          
+          <div id="success-alert" class="alert alert-success mt-3" role="alert">
+            <ion-icon name="checkmark-circle-outline"></ion-icon>
+            <span>Message encoded successfully! Your download should start automatically.</span>
+            <a href="#" id="manual-download" class="btn btn-sm btn-outline-success ml-2">
+              <ion-icon name="download-outline"></ion-icon> Download Again
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block javascripts %}
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const previewContainer = document.getElementById('preview-container');
+    const imagePreview = document.getElementById('image-preview');
+    const imageUpload = document.getElementById('image-upload');
+    const browseBtn = document.getElementById('browse-btn');
+    const fileInfo = document.getElementById('file-info');
+    const messageTextarea = document.getElementById('message');
+    const messageCounter = document.getElementById('message-counter');
+    const encodeBtn = document.getElementById('encode-btn');
+    const progressBar = document.querySelector('.progress');
+    const progressBarInner = document.querySelector('.progress-bar');
+    const errorAlert = document.getElementById('error-alert');
+    const errorMessage = document.getElementById('error-message');
+    const successAlert = document.getElementById('success-alert');
+    const manualDownload = document.getElementById('manual-download');
+    
+    let selectedFile = null;
+    let downloadFilename = null;
+    
+    // Event Handlers
+    browseBtn.addEventListener('click', () => {
+      imageUpload.click();
+    });
+    
+    previewContainer.addEventListener('click', () => {
+      imageUpload.click();
+    });
+    
+    imageUpload.addEventListener('change', handleFileSelect);
+    
+    // Drag and drop functionality
+    previewContainer.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      previewContainer.classList.add('drag-over');
+    });
+    
+    previewContainer.addEventListener('dragleave', () => {
+      previewContainer.classList.remove('drag-over');
+    });
+    
+    previewContainer.addEventListener('drop', (e) => {
+      e.preventDefault();
+      previewContainer.classList.remove('drag-over');
+      
+      if (e.dataTransfer.files.length) {
+        imageUpload.files = e.dataTransfer.files;
+        handleFileSelect(e);
+      }
+    });
+    
+    messageTextarea.addEventListener('input', () => {
+      const count = messageTextarea.value.length;
+      messageCounter.textContent = `${count} character${count !== 1 ? 's' : ''}`;
+      validateForm();
+    });
+    
+    encodeBtn.addEventListener('click', encodeMessage);
+    
+    manualDownload.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (downloadFilename) {
+        window.location.href = `{% url 'steganography:download_file' 'placeholder' %}`.replace('placeholder', downloadFilename);
+      }
+    });
+    
+    // Functions
+    function handleFileSelect(e) {
+      const files = e.target.files || e.dataTransfer.files;
+      
+      if (files.length === 0) return;
+      
+      const file = files[0];
+      selectedFile = file;
+      
+      // Check if file is valid
+      const validTypes = ['image/png', 'image/bmp', 'image/tiff'];
+      
+      if (!validTypes.includes(file.type)) {
+        showError('Please select a PNG, BMP or TIFF image. JPEG/JPG formats are not supported.');
+        resetFileInput();
+        return;
+      }
+      
+      // Check file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        showError('File size exceeds 5MB. Please choose a smaller image.');
+        resetFileInput();
+        return;
+      }
+      
+      // Display file info
+      fileInfo.textContent = `${file.name} (${formatFileSize(file.size)})`;
+      
+      // Preview the image
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        imagePreview.src = e.target.result;
+        imagePreview.style.display = 'block';
+        previewContainer.classList.add('has-image');
+      };
+      reader.readAsDataURL(file);
+      
+      validateForm();
+    }
+    
+    function formatFileSize(bytes) {
+      if (bytes < 1024) return bytes + ' bytes';
+      else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+      else return (bytes / 1048576).toFixed(1) + ' MB';
+    }
+    
+    function validateForm() {
+      encodeBtn.disabled = !selectedFile || !messageTextarea.value.trim();
+    }
+    
+    function resetFileInput() {
+      imageUpload.value = '';
+      imagePreview.src = '#';
+      imagePreview.style.display = 'none';
+      previewContainer.classList.remove('has-image');
+      fileInfo.textContent = '';
+      selectedFile = null;
+      validateForm();
+    }
+    
+    function showError(msg) {
+      errorMessage.textContent = msg;
+      errorAlert.style.display = 'block';
+      successAlert.style.display = 'none';
+      
+      // Auto-hide after 8 seconds
+      setTimeout(() => {
+        errorAlert.style.display = 'none';
+      }, 8000);
+    }
+    
+    function hideAlerts() {
+      errorAlert.style.display = 'none';
+      successAlert.style.display = 'none';
+    }
+    
+    function encodeMessage() {
+      if (!selectedFile || !messageTextarea.value.trim()) {
+        return;
+      }
+      
+      // Hide any existing alerts
+      hideAlerts();
+      
+      // Show progress bar
+      progressBar.style.display = 'block';
+      progressBarInner.style.width = '0%';
+      
+      // Prepare form data
+      const formData = new FormData();
+      formData.append('image', selectedFile);
+      formData.append('message', messageTextarea.value);
+      
+      // Disable the encode button during processing
+      encodeBtn.disabled = true;
+      
+      // Simulate progress (since we don't have real progress events)
+      let progress = 0;
+      const progressInterval = setInterval(() => {
+        progress += 5;
+        if (progress > 95) {
+          clearInterval(progressInterval);
+        }
+        progressBarInner.style.width = `${progress}%`;
+      }, 100);
+      
+      // Send the request to the server
+      fetch('{% url "steganography:encode" %}', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        clearInterval(progressInterval);
+        progressBarInner.style.width = '100%';
+        
+        // Handle response
+        if (data.status === 'success') {
+          // Store filename for manual download
+          downloadFilename = data.filename;
+          
+          // Show success message
+          successAlert.style.display = 'block';
+          
+          // Auto-download the file
+          window.location.href = `{% url 'steganography:download_file' 'placeholder' %}`.replace('placeholder', data.filename);
+          
+          // Reset the form after success (optional)
+          // resetFileInput();
+          // messageTextarea.value = '';
+          // messageCounter.textContent = '0 characters';
+        } else {
+          showError(data.message);
+          encodeBtn.disabled = false;
+        }
+      })
+      .catch(error => {
+        clearInterval(progressInterval);
+        showError('Network error. Please try again later.');
+        encodeBtn.disabled = false;
+      })
+      .finally(() => {
+        // Hide progress bar after a short delay
+        setTimeout(() => {
+          progressBar.style.display = 'none';
+          encodeBtn.disabled = false;
+        }, 1000);
+      });
+    }
+  });
+</script>
+{% endblock javascripts %}

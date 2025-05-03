@@ -1,0 +1,384 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %}Decode Message{% endblock %}
+
+{% block stylesheets %}
+<style>
+  .custom-file-label::after {
+    content: "Browse";
+  }
+  #preview-container {
+    max-width: 100%;
+    height: 300px;
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+  #preview-container.has-image {
+    border: none;
+  }
+  #image-preview {
+    max-width: 100%;
+    max-height: 100%;
+    display: none;
+  }
+  .drop-text {
+    color: #aaa;
+    font-size: 18px;
+    pointer-events: none;
+  }
+  .drag-over {
+    border-color: #28a745 !important;
+    background-color: rgba(40, 167, 69, 0.05);
+  }
+  .progress {
+    height: 8px;
+    margin-top: 15px;
+    display: none;
+  }
+  #error-alert, #success-message-container {
+    display: none;
+  }
+  .file-info {
+    font-size: 14px;
+    margin-top: 5px;
+    color: #666;
+  }
+  .decode-btn {
+    transition: all 0.3s ease;
+  }
+  .decode-btn:hover {
+    transform: translateY(-2px);
+  }
+  .go-back {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: #28a745;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+  .go-back:hover {
+    transform: translateX(-5px);
+    color: #1e7e34;
+  }
+  .feature-tip {
+    background-color: #f8f9fa;
+    border-left: 4px solid #28a745;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+  }
+  #decoded-message {
+    min-height: 150px;
+    padding: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .copy-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    opacity: 0.7;
+    transition: all 0.2s ease;
+  }
+  .copy-btn:hover {
+    opacity: 1;
+  }
+  .message-placeholder {
+    color: #aaa;
+    font-style: italic;
+  }
+</style>
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-12">
+      <div class="yoo-card yoo-card-1">
+        <div class="yoo-card-heading">
+          <div class="yoo-card-heading-left">
+            <h2 class="yoo-card-title"><span class="yoo-card-title-icon"><ion-icon name="key-outline"></ion-icon></span>Decode Hidden Message</h2>
+          </div>
+        </div>
+        <div class="yoo-card-body">
+          <a href="{% url 'steganography:info' %}" class="go-back">
+            <ion-icon name="arrow-back-outline"></ion-icon> Back to information
+          </a>
+          
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="card mb-4">
+                <div class="card-body">
+                  <h5 class="card-title">Upload Encoded Image</h5>
+                  <div class="feature-tip">
+                    <ion-icon name="information-circle-outline"></ion-icon>
+                    <span>Upload an image that contains a hidden message. The image must not have been compressed or modified after encoding.</span>
+                  </div>
+                  
+                  <div id="preview-container">
+                    <img id="image-preview" src="#" alt="Preview">
+                    <div class="drop-text">Drag & drop image here or click to select</div>
+                  </div>
+                  
+                  <div class="mt-3">
+                    <input type="file" class="form-control-file" id="image-upload" accept="image/*" style="display: none;">
+                    <button id="browse-btn" class="btn btn-outline-success btn-sm">
+                      <ion-icon name="image-outline"></ion-icon> Browse Images
+                    </button>
+                    <span class="file-info" id="file-info"></span>
+                  </div>
+                  
+                  <div class="text-center mt-4">
+                    <button id="decode-btn" class="btn btn-success btn-lg decode-btn" disabled>
+                      <ion-icon name="key-outline"></ion-icon> Decode Message
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-lg-6">
+              <div class="card mb-4">
+                <div class="card-body">
+                  <h5 class="card-title">Hidden Message</h5>
+                  
+                  <div id="success-message-container">
+                    <div class="position-relative mb-3">
+                      <div id="decoded-message">
+                        <span class="message-placeholder">The decoded message will appear here</span>
+                      </div>
+                      <button id="copy-btn" class="btn btn-sm btn-outline-secondary copy-btn" title="Copy to clipboard">
+                        <ion-icon name="copy-outline"></ion-icon>
+                      </button>
+                    </div>
+                    
+                    <div class="alert alert-success" role="alert">
+                      <ion-icon name="checkmark-circle-outline"></ion-icon>
+                      <span>Message successfully decoded!</span>
+                    </div>
+                  </div>
+                  
+                  <div id="waiting-message" class="text-center py-5">
+                    <ion-icon name="arrow-back-outline" style="font-size: 48px; color: #ccc;"></ion-icon>
+                    <p class="mt-3 text-muted">Upload an encoded image and click "Decode Message" to reveal the hidden content.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="progress">
+            <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
+          </div>
+          
+          <div id="error-alert" class="alert alert-danger mt-3" role="alert">
+            <ion-icon name="alert-circle-outline"></ion-icon>
+            <span id="error-message"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block javascripts %}
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const previewContainer = document.getElementById('preview-container');
+    const imagePreview = document.getElementById('image-preview');
+    const imageUpload = document.getElementById('image-upload');
+    const browseBtn = document.getElementById('browse-btn');
+    const fileInfo = document.getElementById('file-info');
+    const decodeBtn = document.getElementById('decode-btn');
+    const progressBar = document.querySelector('.progress');
+    const progressBarInner = document.querySelector('.progress-bar');
+    const errorAlert = document.getElementById('error-alert');
+    const errorMessage = document.getElementById('error-message');
+    const successMessageContainer = document.getElementById('success-message-container');
+    const decodedMessage = document.getElementById('decoded-message');
+    const waitingMessage = document.getElementById('waiting-message');
+    const copyBtn = document.getElementById('copy-btn');
+    
+    let selectedFile = null;
+    
+    // Event Handlers
+    browseBtn.addEventListener('click', () => {
+      imageUpload.click();
+    });
+    
+    previewContainer.addEventListener('click', () => {
+      imageUpload.click();
+    });
+    
+    imageUpload.addEventListener('change', handleFileSelect);
+    
+    // Drag and drop functionality
+    previewContainer.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      previewContainer.classList.add('drag-over');
+    });
+    
+    previewContainer.addEventListener('dragleave', () => {
+      previewContainer.classList.remove('drag-over');
+    });
+    
+    previewContainer.addEventListener('drop', (e) => {
+      e.preventDefault();
+      previewContainer.classList.remove('drag-over');
+      
+      if (e.dataTransfer.files.length) {
+        imageUpload.files = e.dataTransfer.files;
+        handleFileSelect(e);
+      }
+    });
+    
+    decodeBtn.addEventListener('click', decodeMessage);
+    
+    copyBtn.addEventListener('click', () => {
+      const textToCopy = decodedMessage.textContent;
+      navigator.clipboard.writeText(textToCopy)
+        .then(() => {
+          // Change button text temporarily
+          const originalHTML = copyBtn.innerHTML;
+          copyBtn.innerHTML = '<ion-icon name="checkmark-outline"></ion-icon>';
+          setTimeout(() => {
+            copyBtn.innerHTML = originalHTML;
+          }, 2000);
+        })
+        .catch(err => {
+          console.error('Could not copy text: ', err);
+        });
+    });
+    
+    // Functions
+    function handleFileSelect(e) {
+      const files = e.target.files || e.dataTransfer.files;
+      
+      if (files.length === 0) return;
+      
+      const file = files[0];
+      selectedFile = file;
+      
+      // Display file info
+      fileInfo.textContent = `${file.name} (${formatFileSize(file.size)})`;
+      
+      // Preview the image
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        imagePreview.src = e.target.result;
+        imagePreview.style.display = 'block';
+        previewContainer.classList.add('has-image');
+      };
+      reader.readAsDataURL(file);
+      
+      decodeBtn.disabled = false;
+    }
+    
+    function formatFileSize(bytes) {
+      if (bytes < 1024) return bytes + ' bytes';
+      else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+      else return (bytes / 1048576).toFixed(1) + ' MB';
+    }
+    
+    function resetFileInput() {
+      imageUpload.value = '';
+      imagePreview.src = '#';
+      imagePreview.style.display = 'none';
+      previewContainer.classList.remove('has-image');
+      fileInfo.textContent = '';
+      selectedFile = null;
+      decodeBtn.disabled = true;
+    }
+    
+    function showError(msg) {
+      errorMessage.textContent = msg;
+      errorAlert.style.display = 'block';
+      successMessageContainer.style.display = 'none';
+      waitingMessage.style.display = 'block';
+      
+      // Auto-hide after 8 seconds
+      setTimeout(() => {
+        errorAlert.style.display = 'none';
+      }, 8000);
+    }
+    
+    function hideAlerts() {
+      errorAlert.style.display = 'none';
+      successMessageContainer.style.display = 'none';
+      waitingMessage.style.display = 'block';
+    }
+    
+    function decodeMessage() {
+      if (!selectedFile) {
+        return;
+      }
+      
+      // Hide any existing alerts
+      hideAlerts();
+      
+      // Show progress bar
+      progressBar.style.display = 'block';
+      progressBarInner.style.width = '0%';
+      
+      // Prepare form data
+      const formData = new FormData();
+      formData.append('image', selectedFile);
+      
+      // Disable the decode button during processing
+      decodeBtn.disabled = true;
+      
+      // Simulate progress (since we don't have real progress events)
+      let progress = 0;
+      const progressInterval = setInterval(() => {
+        progress += 5;
+        if (progress > 95) {
+          clearInterval(progressInterval);
+        }
+        progressBarInner.style.width = `${progress}%`;
+      }, 100);
+      
+      // Send the request to the server
+      fetch('{% url "steganography:decode" %}', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        clearInterval(progressInterval);
+        progressBarInner.style.width = '100%';
+        
+        // Handle response
+        if (data.status === 'success') {
+          // Show decoded message
+          decodedMessage.textContent = data.message;
+          successMessageContainer.style.display = 'block';
+          waitingMessage.style.display = 'none';
+        } else {
+          showError(data.message);
+        }
+      })
+      .catch(error => {
+        clearInterval(progressInterval);
+        showError('Network error. Please try again later.');
+      })
+      .finally(() => {
+        // Hide progress bar after a short delay
+        setTimeout(() => {
+          progressBar.style.display = 'none';
+          decodeBtn.disabled = false;
+        }, 1000);
+      });
+    }
+  });
+</script>
+{% endblock javascripts %}

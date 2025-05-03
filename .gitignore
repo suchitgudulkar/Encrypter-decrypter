@@ -127,3 +127,13 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# userdata | media files
+# Ignore everything in usersdata/
+usersdata/*
+
+# Do not ignore .gitkeep files inside those folders
+!usersdata/**/.gitkeep
+
+# database 
+db.sqlite3
