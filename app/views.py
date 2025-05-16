@@ -15,9 +15,12 @@ OTX_SERVER = 'https://otx.alienvault.com/'
 otx = OTXv2(API_KEY, server=OTX_SERVER)
 from .mal_file import file_, isMalicious_file
 
+@login_required(login_url='/login/')
+def onboard(request):
+    return render(request, "onboarding.html")
 
 @login_required(login_url="/login/")
-def index(request):
+def dashboard(request):
     return render(request, "documentation.html")
 
 @login_required(login_url="/login/")

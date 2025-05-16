@@ -17,7 +17,7 @@ PROJECT_DIR = Path(__file__).parent
 SECRET_KEY = config('SECRET_KEY', default='S#perS3crEt_1122')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=False)
+DEBUG = config('DEBUG', default=True)
 
 # load production server from .env
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0', config('SERVER', default='127.0.0.1')]
@@ -48,7 +48,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'core.urls'
 LOGIN_REDIRECT_URL = "home"  
-LOGOUT_REDIRECT_URL = "home" 
+LOGOUT_REDIRECT_URL = "onboard" 
 TEMPLATE_DIR = os.path.join(BASE_DIR, "core/templates")  # ROOT dir for templates
 
 TEMPLATES = [

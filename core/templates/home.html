@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Encrypter-Decrypter Home</title>
+    <link rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f9f9f9;
+            margin: 0; padding: 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 60px auto;
+            display: flex;
+            justify-content: center;
+            gap: 48px;
+        }
+        .card {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+            width: 320px;
+            padding: 36px 28px;
+            text-align: center;
+            transition: box-shadow 0.2s;
+        }
+        .card:hover {
+            box-shadow: 0 4px 32px rgba(0,0,0,0.14);
+        }
+        .card-title {
+            font-size: 1.5rem;
+            margin-bottom: 14px;
+            font-weight: 600;
+        }
+        .card-desc {
+            font-size: 1rem;
+            color: #555;
+            margin-bottom: 24px;
+        }
+        .card-link {
+            display: inline-block;
+            padding: 12px 22px;
+            border-radius: 6px;
+            background: #195fc2;
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            transition: background 0.2s;
+        }
+        .card-link:hover {
+            background: #153e7e;
+        }
+        @media (max-width: 700px) {
+            .container {
+                flex-direction: column;
+                align-items: center;
+                gap: 32px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center; margin-top: 40px; font-size: 2rem;">Welcome to Encrypter-Decrypter</h1>
+    <div class="container">
+        <div class="card">
+            <div class="card-title">File Encryption/Decryption</div>
+            <div class="card-desc">
+                Securely encrypt your files for safe storage and decrypt them with ease.
+            </div>
+            <a class="card-link" href="{% url 'app:doc' %}">Go to File Encryption</a>
+        </div>
+        <div class="card">
+            <div class="card-title">Steganography</div>
+            <div class="card-desc">
+                Hide secret messages inside images or extract them with powerful LSB steganography tools.
+            </div>
+            <a class="card-link" href="{% url 'steganography:info' %}">Go to Steganography</a>
+        </div>
+    </div>
+</body>
+</html>
